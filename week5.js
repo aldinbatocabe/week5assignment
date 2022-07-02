@@ -52,7 +52,7 @@ class ContinentGroup {
                 }
                 selection = this.showMainMenuOptions();
             }
-            alert("Farewell!");
+            alert("Goodbye!");
         }
 
         showMainMenuOptions() {
