@@ -1,80 +1,135 @@
-class Continent {
-    constructor (continentList){
-        this.continentList = continentList
-    }
-}
-
 class Country {
-    constructor (countryList) {
-        this.countryList = countryList;
+    constructor (name, language) {
+        this.name = name;
+        this.language = language;
+    } 
+       describe() {
+        return `${this.name} has this language: ${this.language}.`;
     }
 }
 
-class Menu {
-    constructor() {
-        this.continentList = [];
-        this.countryList = null;
+class ContinentGroup {
+    constructor (continent) {
+        this.continent = continent;
+        this.countries = [];
+    } 
+       addnpc(name, language) {
+           this.countries.push(new Country(name, language));
+
+       }
+       getAllCountryNames() {
+           return this.countries.map((abd) => abd.name);
+       }
+       
+       describe() {
+           return `${this.countries} has this language ${this.continent}.`;
+       }
     }
-    
-    start () {
-        let selection = this.mainMenu();
-        while (selection != 0){
-            switch (selection) {
-                case '1':
-                    this.createContinent();
-                    break;
-                case '2':
-                    this.createCountry();
-                    break;
-                case '3':
-                    this.removeList();
-                    break;
-                case '4':
-                    this.displayList();
-                    break;
-                default:
-                    selection = 0;
+
+    class Menu {
+        constructor() {
+            this.continentGroups = [];
+            this.selectedContinentGroup = null;
+        }
+        start() {
+            let selection = this.showMainMenuOptions();
+            while (selection != 0) {
+                switch (selection) {
+                    case "1":
+                        this.createContinentGroup();
+                        break;
+                    case "2":
+                        this.viewContinentGroup();
+                        break;
+                    case "3":
+                        this.deleteContinentGroup();
+                        break;
+                    case "4":
+                        this.displayContinentGroup();
+                        break;
+                    default:
+                        selection = 0;
+                }
+                selection = this.showMainMenuOptions();
             }
-            selection = this.mainMenu();
+            alert("Farewell!");
         }
-        alert("Goodbye!");
-    }
+
+        showMainMenuOptions() {
+            return prompt(`
+            0) Exit
+            1) Create new continent 
+            2) View continent 
+            3) Delete continent 
+            4) Display all continent 
+            `);
+        }
+
+        showcontinentMenuOptions(continentInfo) {
+            return prompt(`
+                0) Back
+                1) Create Country
+                2) Delete Country
+                -----------------------
+                ${continentInfo}
+                `);
+        }
+        displayContinentGroup() {
+            let continentString = "";
+            for (let i = 0; i < this.continentGroups.length; i++) {
+                continentString += i + ") " + this.continentGroups[i].continent + "\n";
+            }
+            alert(continentString);
+        }
+
+        createContinentGroup() {
+            let continent = prompt("Enter new continent group:");
+            this.continentGroups.push(new ContinentGroup(continent));
+        }
+
+        viewContinentGroup() {
+            let index = prompt("Enter the index of the continent group you wish to view:");
+            if (index > -1 && index < this.continentGroups.length) {
+                this.selectedContinentGroup = this.continentGroups[index];
+                
+                let description = "continent Group: " + this.selectedContinentGroup.continent + "\n";
+                for (let i = 0; i < this.selectedContinentGroup.countries.length; i++) {
+                    description += i + ") " + this.selectedContinentGroup.countries[i].name
+                     + " - " + this.selectedContinentGroup.countries[i].language + "\n";
+                }
     
-    mainMenu() {
-        return prompt (`
-            0 Exit
-            1 Enter continent
-            2 Enter country
-            3 Remove entry 
-            4 Display list
-        `)
-    }
-
-    displayList () {
-        let display = '';
-        for (let i= 0; i < this.continentList.length && this.countryList.length; i++){
-            dipslay += this.continentList[i] + this.countryList[i];
+                let selection = this.showcontinentMenuOptions(description);
+                switch (selection) {
+                    case "1": 
+                        this.createCountry();
+                        break;
+                    case "2":
+                        this.deleteCountry();
+                }
+            }
+            
         }
-        display(displayList());
-    }
+ 
+        deleteContinentGroup() {
+            let index = prompt("Enter the index of the continent Group you wish to delete:");
+            if (index > -1 && index < this.continentGroups.length) {
+                this.continentGroups.splice(index, 1);
+            }
+        }
 
-    removeList() {
-        let nameRemoved = this.continentList.pop() + this.countryList.pop();
-        alert('entry removed');
-    }
+        createCountry() {
 
-    createContinent () {
-        let name = prompt (`Enter Continent Name:`)
-        this.createContinent.push(continentList());
-    }
+            let name = prompt("Enter name for new Country:");
+            let language = prompt("Enter language for new Country:");
+            this.selectedContinentGroup.countries.push(new Country(name, language));
+        }
 
-    createCountry() {
-        let name = prompt (`Enter Country Name:`)
-        this.createCountry.push(countryList() );
+        deleteCountry() {
+            let index = prompt("Enter the index of the Country you wish to delete:");
+            if (index > -1 && index < this.selectedContinentGroup.countries.length) {
+                this.selectedContinentGroup.countries.splice(index, 1);
+            }
+        }
     }
-}
-
 let menu = new Menu();
-menu.start();
-
-//test 
+menu.start(); 
